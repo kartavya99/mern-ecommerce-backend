@@ -71,10 +71,10 @@ opts.secretOrKey = process.env.JWT_SECRET_KEY; // TODO: should not be in code;
 
 //middlewares
 
-// server.use(express.static(path.resolve(__dirname, "build")));
-server.get("*", (req, res) =>
-  res.sendFile(path.resolve("build", "index.html"))
-);
+server.use(express.static(path.resolve(__dirname, "build")));
+// server.get("*", (req, res) =>
+//   res.sendFile(path.resolve("build", "index.html"))
+// );
 
 server.use(cookieParser());
 server.use(
