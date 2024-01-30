@@ -1,7 +1,7 @@
 const { User } = require("../model/User");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const { sanitizeUser } = require("../services/common");
+const { sanitizeUser, sendMail } = require("../services/common");
 const SECRET_KEY = "SECRET_KEY";
 
 exports.createUser = async (req, res) => {
@@ -58,5 +58,17 @@ exports.checkAuth = async (req, res) => {
     res.json(req.user);
   } else {
     res.sendStatus(401);
+  }
+};
+
+exports.resetPasswordRequest = async (req, res) => {
+  const resetPage = "http://localhost:3000/reset-password";
+  const subject = "reset password for e-commerce";
+  const html = `<p>Click <a href='${resetPage}'>here</a> to Reset Password </p>`;
+  if (req.body.email) {
+    const response = await sendMail({ to: req.body.email, subject, html });
+    res.json(response);
+  } else {
+    res.sendStatus(400);
   }
 };

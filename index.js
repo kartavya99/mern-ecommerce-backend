@@ -27,9 +27,6 @@ const path = require("path");
 // console.log(process.env);
 
 // Webhook
-
-// TODO: we will capture actual order after deploying out server live on public URL
-
 const endpointSecret = process.env.ENDPOINT_SECRET;
 
 server.post(
@@ -103,6 +100,7 @@ server.use("/users", isAuth(), usersRouter.router);
 server.use("/auth", authRouter.router);
 server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
+
 server.get("*", (req, res) =>
   res.sendFile(path.resolve("build", "index.html"))
 );
