@@ -71,7 +71,10 @@ opts.secretOrKey = process.env.JWT_SECRET_KEY; // TODO: should not be in code;
 
 //middlewares
 
-server.use(express.static(path.resolve(__dirname, "build")));
+// server.use(express.static(path.resolve(__dirname, "build")));
+server.get("*", (req, res) =>
+  res.sendFile(path.resolve("build", "index.html"))
+);
 
 server.use(cookieParser());
 server.use(
@@ -177,7 +180,7 @@ passport.deserializeUser(function (user, cb) {
 const stripe = require("stripe")(process.env.STRIPE_SERVER_KEY);
 
 server.post("/create-payment-intent", async (req, res) => {
-  const { totalAmount } = req.body;
+  const { totalAmount, orderId } = req.body;
 
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
@@ -185,6 +188,9 @@ server.post("/create-payment-intent", async (req, res) => {
     currency: "aud",
     automatic_payment_methods: {
       enabled: true,
+    },
+    metadata: {
+      orderId,
     },
   });
 
