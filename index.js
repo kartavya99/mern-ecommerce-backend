@@ -24,8 +24,6 @@ const { Order } = require("./model/Order");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
 const path = require("path");
 
-// console.log(process.env);
-
 // Webhook
 const endpointSecret = process.env.ENDPOINT_SECRET;
 

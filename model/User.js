@@ -6,8 +6,8 @@ const UserSchema = new Schema(
     email: { type: String, required: true, unique: true },
     password: { type: Buffer, required: true },
     role: { type: String, required: true, default: "user" },
+    // for addresses - can make a separate Schema like orders. but in this case we are okay
     addresses: { type: [Schema.Types.Mixed] },
-    //TODO: can make a separate Schema for address
     name: { type: String },
     orders: { type: [Schema.Types.Mixed] },
     salt: Buffer,
