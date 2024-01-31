@@ -26,14 +26,11 @@ exports.cookieExtractor = function (req) {
   if (req && req.cookies) {
     token = req.cookies["jwt"];
   }
-  //TODO: this is temp token for testing without cookie
-  // token =
-  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjcyMTMwNmNlNzJiYTdiNDVhZTA5ZCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzA2NTAwNDAwfQ.NC7BQoyHq5VmgkBEK2UmnJXNjIo5weT6EuT7MeHDdoI";
+
   return token;
 };
 
 // Mail endpoint
-// we dont want external excess
 exports.sendMail = async function ({ to, subject, text, html }) {
   // send mail with defined transport object
   const info = await transporter.sendMail({
