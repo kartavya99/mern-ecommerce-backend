@@ -62,12 +62,58 @@ exports.checkAuth = async (req, res) => {
 };
 
 exports.resetPasswordRequest = async (req, res) => {
-  const resetPage = "http://localhost:3000/reset-password";
-  const subject = "reset password for e-commerce";
-  const html = `<p>Click <a href='${resetPage}'>here</a> to Reset Password </p>`;
-  if (req.body.email) {
-    const response = await sendMail({ to: req.body.email, subject, html });
-    res.json(response);
+  const email = req.body.email;
+  const user = await User.findOne({ email: email });
+  if (user) {
+    const token = crypto.randomBytes(48).toString("hex");
+    user.resetPasswordToken = token;
+    await user.save();
+
+    // Also set toke in email
+    const resetPageLink =
+      "http://localhost:3000/reset-password?token=" + token + "&email=" + email;
+    const subject = "reset password for e-commerce";
+    const html = `<p>Click <a href='${resetPageLink}'>here</a> to Reset Password </p>`;
+
+    // send email and a token in the mail body to verify that use has clicked right link
+    if (email) {
+      const response = await sendMail({ to: email, subject, html });
+      res.json(response);
+    } else {
+      res.sendStatus(400);
+    }
+  } else {
+    res.sendStatus(400);
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const { email, password, token } = req.body;
+
+  const user = await User.findOne({ email: email, resetPasswordToken: token });
+  if (user) {
+    const salt = crypto.randomBytes(16);
+    crypto.pbkdf2(
+      req.body.password,
+      salt,
+      310000,
+      32,
+      "sha256",
+      async function (err, hashedPassword) {
+        user.password = hashedPassword;
+        user.salt = salt;
+        await user.save();
+        const subject = "password successfully reset for e-commerce";
+        const html = `<p>Successfully able to Reset Password </p>`;
+
+        if (email) {
+          const response = await sendMail({ to: email, subject, html });
+          res.json(response);
+        } else {
+          res.sendStatus(400);
+        }
+      }
+    );
   } else {
     res.sendStatus(400);
   }
