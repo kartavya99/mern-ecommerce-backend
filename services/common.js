@@ -13,33 +13,16 @@ const transporter = nodemailer.createTransport({
   },
 });
 // Mail endpoint
-// exports.sendMail = async function ({ to, subject, text, html }) {
-//   // send mail with defined transport object
-//   const info = await transporter.sendMail({
-//     from: '"E-commerce" <kiwizebon99@gmail.com>', // sender address
-//     to,
-//     subject,
-//     text,
-//     html,
-//   });
-//   return info;
-// };
-
-exports.sendMail = function ({ to, subject, text, html }) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const info = await transporter.sendMail({
-        from: '"E-commerce" <kiwizebon99@gmail.com>', // sender address
-        to,
-        subject,
-        text,
-        html,
-      });
-      resolve(info);
-    } catch (err) {
-      reject(err);
-    }
+exports.sendMail = async function ({ to, subject, text, html }) {
+  // send mail with defined transport object
+  const info = await transporter.sendMail({
+    from: '"E-commerce" <kiwizebon99@gmail.com>', // sender address
+    to,
+    subject,
+    text,
+    html,
   });
+  return info;
 };
 
 exports.isAuth = (req, res, done) => {
