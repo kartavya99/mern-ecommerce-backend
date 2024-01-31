@@ -12,6 +12,35 @@ const transporter = nodemailer.createTransport({
     pass: process.env.MAIL_PASSWORD,
   },
 });
+// Mail endpoint
+// exports.sendMail = async function ({ to, subject, text, html }) {
+//   // send mail with defined transport object
+//   const info = await transporter.sendMail({
+//     from: '"E-commerce" <kiwizebon99@gmail.com>', // sender address
+//     to,
+//     subject,
+//     text,
+//     html,
+//   });
+//   return info;
+// };
+
+exports.sendMail = function ({ to, subject, text, html }) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const info = await transporter.sendMail({
+        from: '"E-commerce" <kiwizebon99@gmail.com>', // sender address
+        to,
+        subject,
+        text,
+        html,
+      });
+      resolve(info);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
 
 exports.isAuth = (req, res, done) => {
   return passport.authenticate("jwt");
@@ -28,19 +57,6 @@ exports.cookieExtractor = function (req) {
   }
 
   return token;
-};
-
-// Mail endpoint
-exports.sendMail = async function ({ to, subject, text, html }) {
-  // send mail with defined transport object
-  const info = await transporter.sendMail({
-    from: '"E-commerce" <kiwizebon99@gmail.com>', // sender address
-    to,
-    subject,
-    text,
-    html,
-  });
-  return info;
 };
 
 exports.invoiceTemplate = function (order) {
